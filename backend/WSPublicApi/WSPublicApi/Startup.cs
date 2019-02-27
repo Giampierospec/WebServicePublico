@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WSPublicApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WSPublicApi
 {
@@ -24,6 +26,9 @@ namespace WSPublicApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDbContext<WSBDContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("WSContext"))
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,7 +38,7 @@ namespace WSPublicApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseMvc();
         }
     }
