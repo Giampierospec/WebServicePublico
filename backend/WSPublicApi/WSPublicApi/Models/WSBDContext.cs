@@ -15,5 +15,6 @@ namespace WSPublicApi.Models
         }
         public DbSet<CambioMoneda> MonedasTasa { get; set; }
         public DbSet<LogWs> LogWS { get; set; }
+        public DbSet<Inflacion> Inflaciones { get; set; }
     }
 }
