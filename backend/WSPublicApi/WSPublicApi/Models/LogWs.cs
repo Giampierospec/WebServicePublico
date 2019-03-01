@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace WSPublicApi.Models
 {
-    public class CambioMoneda
+    public class LogWs
     {
         [Key]
         public int Id { get; set; }
-        public string Codigo { get; set; }
-        public double TasaCambio { get; set; }
+        public string Ip { get; set; }
+        public DateTime FechaInvocacion { get; set; }
+        public string NombreWS { get; set; }
+        public string Method { get; set; }
     }
 }
