@@ -8,6 +8,7 @@ namespace WSPublicApi.Models
 {
     public class WSBDContext:DbContext
     {
+
         public WSBDContext(DbContextOptions<WSBDContext> options)
             :base(options)
         {

@@ -14,7 +14,6 @@ namespace WSPublicApi.Models
         public string Cedula { get; set; }
         public string Nombre { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public List<HistorialCrediticio> Personas { get; set; };
 
     }
 }
