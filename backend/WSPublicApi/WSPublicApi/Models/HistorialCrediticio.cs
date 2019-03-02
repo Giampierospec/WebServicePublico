@@ -15,10 +15,10 @@ namespace WSPublicApi.Models
         public int IdEmpresa { get; set; }
         public string Concepto { get; set; }
         public DateTime? Fecha { get; set; }
-        public double MontoTotal { get; set; }
+        public decimal MontoTotal { get; set; }
         [ForeignKey("IdPersona")]
         public Persona Persona { get; set; }
         [ForeignKey("IdEmpresa")]
-        public Persona Empresa { get; set; }
+        public Persona Persona1 { get; set; }
     }
 }

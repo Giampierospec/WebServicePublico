@@ -11,6 +11,6 @@ namespace WSPublicApi.Models
         [Key]
         public int Id { get; set; }
         public string Codigo { get; set; }
-        public double TasaCambio { get; set; }
+        public decimal TasaCambio { get; set; }
     }
 }

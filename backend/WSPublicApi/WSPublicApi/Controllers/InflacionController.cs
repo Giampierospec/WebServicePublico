@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WSPublicApi.Models;
@@ -9,34 +10,33 @@ using WSPublicApi.Utils;
 namespace WSPublicApi.Controllers
 {
     [Route("api/[controller]")]
-    public class ChangeController : Controller
+    public class InflacionController : Controller
     {
-        WSBDContext _db;
+        private WSBDContext _db;
         private HistorySave _saveHistory;
-
-        public ChangeController(WSBDContext context)
+        private Regex validateYear = new Regex("^(19[6-9][0-9]|20[0-9][0-9])$");
+        public InflacionController(WSBDContext context)
         {
             _db = context;
             _saveHistory = new HistorySave(_db);
         }
         /// <summary>
-        /// Trae el cambio de moneda en base a un codigo
+        /// Conseguir el indice de inflacion
         /// </summary>
-        /// <param name="cod"></param>
+        /// <param name="year"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Get(string cod)
+        public IActionResult Get(string year)
         {
             var result = default(IActionResult);
             _saveHistory.SaveHistory(HttpContext);
-            var moneda = _db.MonedasTasa.FirstOrDefault(x => x.Codigo.ToUpper().Trim() == cod.ToUpper().Trim());
-            if (moneda != null)
-                result = Ok(moneda);
+            if (validateYear.IsMatch(year))
+                result = Ok(_db.Inflaciones.FirstOrDefault(x => x.Periodo.ToString() == year));
             else
-                result = NotFound($"No se encontro el código {cod}");
-           return result;
+                result = BadRequest($"El valor {year} no es valido");
+            return result;
         }
 
-
+       
     }
 }

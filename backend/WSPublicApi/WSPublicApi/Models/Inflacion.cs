@@ -10,7 +10,7 @@ namespace WSPublicApi.Models
     {
         [Key]
         public int Id { get; set; }
-        public DateTime? Periodo { get; set; }
-        public double Indice { get; set; }
+        public int Periodo { get; set; }
+        public decimal Indice { get; set; }
     }
 }
