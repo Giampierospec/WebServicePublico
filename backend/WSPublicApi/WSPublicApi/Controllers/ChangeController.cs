@@ -31,7 +31,7 @@ namespace WSPublicApi.Controllers
             _saveHistory.SaveHistory(HttpContext);
             var moneda = _db.MonedasTasa.FirstOrDefault(x => x.Codigo.ToUpper().Trim() == cod.ToUpper().Trim());
             if (moneda != null)
-                result = Ok(moneda);
+                result = Ok(new { moneda?.Codigo,moneda?.TasaCambio});
             else
                 result = NotFound($"No se encontro el código {cod}");
            return result;

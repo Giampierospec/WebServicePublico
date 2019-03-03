@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WSPublicApi.Models;
+using WSPublicApi.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,17 +16,20 @@ namespace WSPublicApi.Controllers
     public class CrediticioController : Controller
     {
         private WSBDContext _db;
+        private HistorySave _history;
         private Regex VerificarCedula = new Regex("^(d{11})$");
 
         public CrediticioController(WSBDContext context)
         {
             _db = context;
+            _history = new HistorySave();
         }
         // GET: api/<controller>
         [HttpGet]
         public IActionResult Get(string cedula)
         {
            var  result = default(IActionResult);
+            _history.SaveHistory(HttpContext);
             var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
             var saludFinanciera = default(dynamic);
             if (Persona != null)
@@ -53,6 +57,7 @@ namespace WSPublicApi.Controllers
         public IActionResult GetHistorial(string cedula)
         {
             var result = default(IActionResult);
+            _history.SaveHistory(HttpContext);
             var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
             var saludFinanciera = default(dynamic);
             if (Persona != null)

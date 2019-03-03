@@ -30,8 +30,9 @@ namespace WSPublicApi.Controllers
         {
             var result = default(IActionResult);
             _saveHistory.SaveHistory(HttpContext);
+            var inflacion = _db.Inflaciones.FirstOrDefault(x => x.Periodo.ToString() == year);
             if (validateYear.IsMatch(year))
-                result = Ok(_db.Inflaciones.FirstOrDefault(x => x.Periodo.ToString() == year));
+                result = Ok(new { inflacion?.Indice, inflacion?.Periodo});
             else
                 result = BadRequest($"El valor {year} no es valido");
             return result;

@@ -10,6 +10,11 @@ namespace WSPublicApi.Utils
     public class HistorySave
     {
         private WSBDContext _db;
+
+        public HistorySave()
+        {
+        }
+
         public HistorySave(WSBDContext bd)
         {
             _db = bd;
