@@ -15,6 +15,7 @@ namespace WSPublicApi
 {
     public class Startup
     {
+        private readonly string Policy = "AuthorizePolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +26,12 @@ namespace WSPublicApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy(Policy, builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            }));
             services.AddMvc();
             services.AddDbContext<WSBDContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("WSContext"))
@@ -38,7 +45,7 @@ namespace WSPublicApi
             {
                 app.UseDeveloperExceptionPage();
             }
-       
+            app.UseCors(Policy);
             
             app.UseMvc();
         }

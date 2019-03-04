@@ -19,5 +19,6 @@ namespace WSPublicApi.Models
         public DbSet<Inflacion> Inflaciones { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<HistorialCrediticio> HistorialCrediticio { get; set; }
+        public DbSet<ExceptionApi> ExceptionsApi{ get; set; }
     }
 }

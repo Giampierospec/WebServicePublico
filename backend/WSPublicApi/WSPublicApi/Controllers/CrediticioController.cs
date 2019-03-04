@@ -28,28 +28,44 @@ namespace WSPublicApi.Controllers
         [HttpGet]
         public IActionResult Get(string cedula)
         {
-           var  result = default(IActionResult);
-            _history.SaveHistory(HttpContext);
-            var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
-            var saludFinanciera = default(dynamic);
-            if (Persona != null)
+            var result = default(IActionResult);
+            try
             {
-                saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
-                .Where(x => x.IdPersona == Persona)
-                .GroupBy(x => x.IdPersona)
-                .Select(x => x.FirstOrDefault())
-                .Select(x => new
+                _history.SaveHistory(HttpContext);
+                var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
+                var saludFinanciera = default(dynamic);
+                if (Persona != null)
                 {
-                    Comentario = x.Concepto,
-                    x.MontoTotal
-                })
-                .ToList();
-                result = Ok(saludFinanciera);
+                    saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
+                    .Where(x => x.IdPersona == Persona)
+                    .GroupBy(x => x.IdPersona)
+                    .Select(x => x.FirstOrDefault())
+                    .Select(x => new
+                    {
+                        Comentario = x.Concepto,
+                        x.MontoTotal
+                    })
+                    .ToList();
+                    result = Ok(saludFinanciera);
+                }
+                else
+                    result = NotFound("No se pudo encontrar al cliente");
             }
-            else
-                result = NotFound("No se pudo encontrar al cliente");
+            catch (Exception ex)
+            {
+                _db.ExceptionsApi.Add(new ExceptionApi()
+                {
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    Method = Request.Path
+                });
+                _db.SaveChanges();
+                result = BadRequest("Ocurrio un error");
+            }
            
-          return result;
+            
+
+            return result;
         }
 
         // GET api/<controller>/5
@@ -57,46 +73,46 @@ namespace WSPublicApi.Controllers
         public IActionResult GetHistorial(string cedula)
         {
             var result = default(IActionResult);
-            _history.SaveHistory(HttpContext);
-            var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
-            var saludFinanciera = default(dynamic);
-            if (Persona != null)
+            try
             {
-                saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
-                .Where(x => x.IdPersona == Persona)
-                .GroupBy(x => x.IdPersona)
-                .Select(x => x.FirstOrDefault())
-                .Select(x => new
+                _history.SaveHistory(HttpContext);
+                var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
+                var saludFinanciera = default(dynamic);
+                if (Persona != null)
                 {
-                     x.Concepto,
-                    RncEmpresa = x.Persona1.Cedula,
-                     Fecha = x.Fecha.HasValue ? x.Fecha.Value.ToString("dd-MM-yyyy"): string.Empty,
-                    x.MontoTotal
-                })
-                .ToList();
-                result = Ok(saludFinanciera);
+                    saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
+                    .Where(x => x.IdPersona == Persona)
+                    .GroupBy(x => x.IdPersona)
+                    .Select(x => x.FirstOrDefault())
+                    .Select(x => new
+                    {
+                        x.Concepto,
+                        RncEmpresa = x.Persona1.Cedula,
+                        Fecha = x.Fecha.HasValue ? x.Fecha.Value.ToString("dd-MM-yyyy") : string.Empty,
+                        x.MontoTotal
+                    })
+                    .ToList();
+                    result = Ok(saludFinanciera);
+                }
+                else
+                    result = NotFound("No se pudo encontrar al cliente");
             }
-            else
-                result = NotFound("No se pudo encontrar al cliente");
+            catch (Exception ex)
+            {
+                _db.ExceptionsApi.Add(new ExceptionApi()
+                {
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    Method = Request.Path
+                });
+                _db.SaveChanges();
+                result = BadRequest("Ocurrio un error");
+
+            }
+
+
             return result;
         }
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

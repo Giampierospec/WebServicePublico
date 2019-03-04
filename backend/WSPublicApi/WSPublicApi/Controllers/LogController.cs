@@ -25,7 +25,24 @@ namespace WSPublicApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_db.LogWS.ToList());
+            var result = default(IActionResult);
+            try
+            {
+                result = Ok(_db.LogWS.Select(x => new { x.NombreWS, x.Ip, x.Method, x.FechaInvocacion }).ToList());
+            }
+            catch (Exception ex)
+            {
+
+                _db.ExceptionsApi.Add(new ExceptionApi()
+                {
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    Method = Request.Path
+                });
+                _db.SaveChanges();
+                result = BadRequest("Ocurrió un Error");
+            }
+            return result;
         }
 
         // GET api/<controller>/5

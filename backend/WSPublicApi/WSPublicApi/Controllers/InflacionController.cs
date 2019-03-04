@@ -14,7 +14,7 @@ namespace WSPublicApi.Controllers
     {
         private WSBDContext _db;
         private HistorySave _saveHistory;
-        private Regex validateYear = new Regex("^(19[6-9][0-9]|20[0-9][0-9])$");
+        private Regex validateYear = new Regex("^(198[0-9]|20[0-1][0-8])$");
         public InflacionController(WSBDContext context)
         {
             _db = context;
@@ -29,13 +29,30 @@ namespace WSPublicApi.Controllers
         public IActionResult Get(string year)
         {
             var result = default(IActionResult);
-            _saveHistory.SaveHistory(HttpContext);
-            var inflacion = _db.Inflaciones.FirstOrDefault(x => x.Periodo.ToString() == year);
-            if (validateYear.IsMatch(year))
-                result = Ok(new { inflacion?.Indice, inflacion?.Periodo});
-            else
-                result = BadRequest($"El valor {year} no es valido");
+            try
+            {
+                _saveHistory.SaveHistory(HttpContext);
+                var inflacion = _db.Inflaciones.FirstOrDefault(x => x.Periodo.ToString() == year);
+                if (validateYear.IsMatch(year))
+                    result = Ok(new { inflacion?.Indice, inflacion?.Periodo });
+                else
+                    result = BadRequest($"El valor {year} no es valido o no esta en el rango 1980-2018");   
+            }
+            catch (Exception ex)
+            {
+
+                _db.ExceptionsApi.Add(new ExceptionApi()
+                {
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    Method = Request.Path
+                });
+                _db.SaveChanges();
+                result = BadRequest("Ocurrió un Error");
+            }
             return result;
+
+
         }
 
        
