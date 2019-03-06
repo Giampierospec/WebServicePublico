@@ -9,11 +9,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="obj in list">
+                    <tr v-for="obj in paginatedData">
                         <td v-for="pr in objProps">{{obj[pr]}}</td>
                     </tr>
                 </tbody>
             </table>
+            <button @click="prevPage" class="btn btn-default" :disabled="pageNumber === 0"><i class="far fa-caret-square-left"></i></button>
+            <button @click="nextPage" class="btn btn-default" :disabled="pageNumber >= (pageCount -1)"><i class="far fa-caret-square-right"></i></button>
         </div>
     </div>
 </template>
@@ -21,13 +23,39 @@
 export default {
     data(){
         return{
-            maxSize: 5
+            pageNumber:0
         };
+    },
+    computed:{
+        pageCount(){
+            let l = this.list.length,
+            s = this.maxSize;
+            return Math.ceil(l/s);
+
+        },
+        paginatedData(){
+            const start = this.pageNumber * this.maxSize,
+            end = start +this.maxSize;
+            return this.list.slice(start,end);
+        }
+    },
+    methods:{
+        nextPage(){
+            this.pageNumber++;
+        },
+        prevPage(){
+            this.pageNumber--;
+        }
     },
     props:{
         list:{
             type:Array,
             required:true
+        },
+        maxSize:{
+            type:Number,
+            default: 5,
+            required: false
         },
         objProps:{
             type:Array,
