@@ -11,10 +11,6 @@ namespace WSPublicApi.Utils
     {
         private WSBDContext _db;
 
-        public HistorySave()
-        {
-        }
-
         public HistorySave(WSBDContext bd)
         {
             _db = bd;
@@ -28,7 +24,7 @@ namespace WSPublicApi.Utils
             _db.LogWS.Add(new LogWs()
             {
                 FechaInvocacion = DateTime.Now,
-                Ip = context.Connection.RemoteIpAddress.ToString(),
+                Ip = context?.Connection.RemoteIpAddress?.ToString(),
                 Method = context.Request.Method,
                 NombreWS = context.Request.Path
             });

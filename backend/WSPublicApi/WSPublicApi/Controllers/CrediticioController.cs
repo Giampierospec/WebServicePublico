@@ -22,7 +22,7 @@ namespace WSPublicApi.Controllers
         public CrediticioController(WSBDContext context)
         {
             _db = context;
-            _history = new HistorySave();
+            _history = new HistorySave(context);
         }
         // GET: api/<controller>
         [HttpGet]
@@ -37,16 +37,8 @@ namespace WSPublicApi.Controllers
                 if (Persona != null)
                 {
                     saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
-                    .Where(x => x.IdPersona == Persona)
-                    .GroupBy(x => x.IdPersona)
-                    .Select(x => x.FirstOrDefault())
-                    .Select(x => new
-                    {
-                        Comentario = x.Concepto,
-                        x.MontoTotal
-                    })
-                    .ToList();
-                    result = Ok(saludFinanciera);
+                                    .FirstOrDefault(x => x.IdPersona == Persona);
+                    result = Ok(new { Comentario = saludFinanciera?.Concepto, saludFinanciera?.MontoTotal});
                 }
                 else
                     result = NotFound("No se pudo encontrar al cliente");
@@ -55,7 +47,7 @@ namespace WSPublicApi.Controllers
             {
                 _db.ExceptionsApi.Add(new ExceptionApi()
                 {
-                    Message = ex.Message,
+                    Msg= ex.Message,
                     StackTrace = ex.StackTrace,
                     Method = Request.Path
                 });
@@ -69,50 +61,7 @@ namespace WSPublicApi.Controllers
         }
 
         // GET api/<controller>/5
-        [HttpGet("Historial")]
-        public IActionResult GetHistorial(string cedula)
-        {
-            var result = default(IActionResult);
-            try
-            {
-                _history.SaveHistory(HttpContext);
-                var Persona = _db.Persona.FirstOrDefault(x => x.Cedula.Trim() == cedula.Trim())?.Id;
-                var saludFinanciera = default(dynamic);
-                if (Persona != null)
-                {
-                    saludFinanciera = _db.HistorialCrediticio.Include(x => x.Persona1)
-                    .Where(x => x.IdPersona == Persona)
-                    .GroupBy(x => x.IdPersona)
-                    .Select(x => x.FirstOrDefault())
-                    .Select(x => new
-                    {
-                        x.Concepto,
-                        RncEmpresa = x.Persona1.Cedula,
-                        Fecha = x.Fecha.HasValue ? x.Fecha.Value.ToString("dd-MM-yyyy") : string.Empty,
-                        x.MontoTotal
-                    })
-                    .ToList();
-                    result = Ok(saludFinanciera);
-                }
-                else
-                    result = NotFound("No se pudo encontrar al cliente");
-            }
-            catch (Exception ex)
-            {
-                _db.ExceptionsApi.Add(new ExceptionApi()
-                {
-                    Message = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    Method = Request.Path
-                });
-                _db.SaveChanges();
-                result = BadRequest("Ocurrio un error");
-
-            }
-
-
-            return result;
-        }
+       
 
     }
 }

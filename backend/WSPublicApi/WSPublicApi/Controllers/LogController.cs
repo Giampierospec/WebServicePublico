@@ -35,7 +35,7 @@ namespace WSPublicApi.Controllers
 
                 _db.ExceptionsApi.Add(new ExceptionApi()
                 {
-                    Message = ex.Message,
+                    Msg = ex.Message,
                     StackTrace = ex.StackTrace,
                     Method = Request.Path
                 });
