@@ -14,7 +14,7 @@ namespace WSPublicApi.Controllers
     {
         private WSBDContext _db;
         private HistorySave _saveHistory;
-        private Regex validateYear = new Regex("^(198[0-9]|20[0-1][0-8])$");
+        private Regex validateYear = new Regex("^(19[8-9][0-9]|20[0-1][0-8])$");
         public InflacionController(WSBDContext context)
         {
             _db = context;

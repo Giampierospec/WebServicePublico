@@ -14,8 +14,15 @@
                     </tr>
                 </tbody>
             </table>
-            <button @click="prevPage" class="btn btn-default" :disabled="pageNumber === 0"><i class="far fa-caret-square-left"></i></button>
-            <button @click="nextPage" class="btn btn-default" :disabled="pageNumber >= (pageCount -1)"><i class="far fa-caret-square-right"></i></button>
+            <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item"><button class="page-link"  @click="prevPage" :disabled="pageNumber === 0"><i class="far fa-caret-square-left"></i></button></li>
+    <li class="page-item" v-for="c in (pageCount-1)"><a class="page-link" href="#" @click="setPage(c)">{{c}}</a></li>
+    <li class="page-item"><button class="page-link" @click="nextPage" :disabled="pageNumber >= (pageCount -1)"><i class="far fa-caret-square-right"></i></button></li>
+  </ul>
+</nav>
+            <!-- <button @click="prevPage" class="btn btn-default" :disabled="pageNumber === 0"><i class="far fa-caret-square-left"></i></button> -->
+            <!-- <button @click="nextPage" class="btn btn-default" :disabled="pageNumber >= (pageCount -1)"><i class="far fa-caret-square-right"></i></button> -->
         </div>
     </div>
 </template>
@@ -45,6 +52,9 @@ export default {
         },
         prevPage(){
             this.pageNumber--;
+        },
+        setPage(pageNumber){
+            this.pageNumber = pageNumber;
         }
     },
     props:{
